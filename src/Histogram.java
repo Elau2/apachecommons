@@ -1,6 +1,4 @@
 import java.util.*;
-
-
 import org.apache.commons.csv.*;
 import org.apache.commons.math3.stat.Frequency;
 import org.knowm.xchart.*;
@@ -8,7 +6,7 @@ import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.internal.chartpart.Chart;
+import org.knowm.xchart.internal.*;
 
 public class Histogram {
 
@@ -91,6 +89,7 @@ public class Histogram {
             distributionMap.replace(bin, oldFrequency + observationFrequency);
         }
     }
+    
 
     public static void main(String[] args) {
         new Histogram();
