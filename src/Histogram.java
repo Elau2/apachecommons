@@ -1,3 +1,7 @@
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import org.apache.commons.csv.*;
 import org.apache.commons.math3.stat.Frequency;
@@ -9,7 +13,8 @@ import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.internal.*;
 
 public class Histogram {
-
+	
+	private static final String filepath = "./Congress_White_House.csv";
     private Map distributionMap;
     private int classWidth;
 
@@ -91,8 +96,27 @@ public class Histogram {
     }
     
 
-    public static void main(String[] args) {
-        new Histogram();
+    public static void main(String[] args) throws IOException{
+    	try (
+                Reader reader = Files.newBufferedReader(Paths.get(filepath));
+                CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
+            ) {
+                for (CSVRecord csvRecord : csvParser) {
+                    // Accessing Values by Column Index
+                  
+                    String salary = csvRecord.get(2);
+                    try {
+                    	int salaryint = Integer.parseInt(salary.split(".")[0]);
+                        
+                        System.out.println(salaryint + " ");
+                    }
+                    catch (NumberFormatException nfe){
+                    	System.out.println(salary);
+                    }
+                }
+            }
+    	
+        //new Histogram();
     }
 
 }
