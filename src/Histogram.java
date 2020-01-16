@@ -103,15 +103,17 @@ public class Histogram {
             ) {
                 for (CSVRecord csvRecord : csvParser) {
                     // Accessing Values by Column Index
-                  
+                	
                     String salary = csvRecord.get(2);
-                    try {
-                    	int salaryint = Integer.parseInt(salary.split(".")[0]);
+                    if (salary.contains(".")) {
+                    	try {
+                    		int salaryint = Integer.parseInt(salary.split("\\.")[0]);
                         
-                        System.out.println(salaryint + " ");
-                    }
-                    catch (NumberFormatException nfe){
-                    	System.out.println(salary);
+                    		System.out.println(salaryint + " ");
+                    	}
+                    	catch (NumberFormatException nfe){
+                    		System.out.println(salary);
+                    	}
                     }
                 }
             }
