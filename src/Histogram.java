@@ -18,11 +18,11 @@ public class Histogram {
     private Map distributionMap;
     private int classWidth;
 
-    public Histogram() {
+    public Histogram(List<Integer> dataset) {
 
         distributionMap = new TreeMap();
         classWidth = 10;
-        Map distributionMap = processRawData();
+        Map distributionMap = processRawData(dataset);
         List yData = new ArrayList();
         yData.addAll(distributionMap.values());
         List xData = Arrays.asList(distributionMap.keySet().toArray());
@@ -36,26 +36,27 @@ public class Histogram {
 
         // Create Chart
         CategoryChart chart = new CategoryChartBuilder().width(800).height(600)
-                .title("Age Distribution")
-                .xAxisTitle("Age Group")
+                .title("White House Salaries")
+                .xAxisTitle("Salary")
                 .yAxisTitle("Frequency")
                 .build();
 
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
         chart.getStyler().setAvailableSpaceFill(0.99);
-        chart.getStyler().setOverlapped(true);
+        chart.getStyler().setOverlapped(false);
 
-        chart.addSeries("age group", xData, yData);
+        chart.addSeries("Salary", xData, yData);
 
         return chart;
     }
 
-    private Map processRawData() {
-
+    private Map processRawData(List<Integer> datasetList) {
+    	/*
         List<Integer> datasetList = Arrays.asList(
           36, 25, 38, 46, 55, 68, 72,
           55, 36, 38, 67, 45, 22, 48,
           91, 46, 52, 61, 58, 55);
+        */
         Frequency frequency = new Frequency();
         datasetList.forEach(d -> frequency.addValue(Double.parseDouble(d.toString())));
 
@@ -97,6 +98,7 @@ public class Histogram {
     
 
     public static void main(String[] args) throws IOException{
+    	List<Integer> dataset = new ArrayList<Integer>();
     	try (
                 Reader reader = Files.newBufferedReader(Paths.get(filepath));
                 CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -109,16 +111,16 @@ public class Histogram {
                     	try {
                     		int salaryint = Integer.parseInt(salary.split("\\.")[0]);
                         
-                    		System.out.println(salaryint + " ");
+                    		dataset.add(salaryint/1000);
                     	}
                     	catch (NumberFormatException nfe){
-                    		System.out.println(salary);
+                    		
                     	}
                     }
                 }
             }
     	
-        //new Histogram();
+        new Histogram(dataset);
     }
 
 }
