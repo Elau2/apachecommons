@@ -1,4 +1,6 @@
 import java.io.IOException;
+
+
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -11,13 +13,34 @@ import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.internal.*;
+//import org.knowm.xchart.demo.*;
 
-public class Histogram {
+public class Graph implements ExampleChart<CategoryChart>{
+	
 	
 	private static final String filepath = "./Congress_White_House.csv";
     private Map distributionMap;
     private int classWidth;
-
+    private static List<Integer> dataset = new ArrayList<Integer>();
+    public int graphtype = 0;
+    
+    public CategoryChart getChart() {
+    	
+    	CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title("Salary Histogram").xAxisTitle("Salary").yAxisTitle("Count").build();
+    	 
+    	// Customize Chart
+    	
+    	chart.getStyler().setAvailableSpaceFill(.96);
+    	chart.getStyler().setOverlapped(true);
+    	 
+    	// Series
+    	Histogram histogram1 = new Histogram(dataset, 20, -5000, 195000);
+    	chart.addSeries("histogram 1", histogram1.getxAxisData(), histogram1.getyAxisData());
+    	
+    	return chart;
+    }
+    
+    /*
     public Histogram(List<Integer> dataset) {
 
         distributionMap = new TreeMap();
@@ -43,7 +66,7 @@ public class Histogram {
 
         chart.getStyler().setLegendPosition(Styler.LegendPosition.InsideNW);
         chart.getStyler().setAvailableSpaceFill(0.99);
-        chart.getStyler().setOverlapped(false);
+        chart.getStyler().setOverlapped(true);
 
         chart.addSeries("Salary", xData, yData);
 
@@ -51,12 +74,12 @@ public class Histogram {
     }
 
     private Map processRawData(List<Integer> datasetList) {
-    	/*
+    	
         List<Integer> datasetList = Arrays.asList(
           36, 25, 38, 46, 55, 68, 72,
           55, 36, 38, 67, 45, 22, 48,
           91, 46, 52, 61, 58, 55);
-        */
+        
         Frequency frequency = new Frequency();
         datasetList.forEach(d -> frequency.addValue(Double.parseDouble(d.toString())));
 
@@ -79,6 +102,7 @@ public class Histogram {
 
         return distributionMap;
     }
+    
 
     private void updateDistributionMap(int lowerBoundary, String bin, long observationFrequency) {
 
@@ -96,9 +120,9 @@ public class Histogram {
         }
     }
     
-
+    */
     public static void main(String[] args) throws IOException{
-    	List<Integer> dataset = new ArrayList<Integer>();
+    	
     	try (
                 Reader reader = Files.newBufferedReader(Paths.get(filepath));
                 CSVParser csvParser = new CSVParser(reader, CSVFormat.DEFAULT);
@@ -111,7 +135,7 @@ public class Histogram {
                     	try {
                     		int salaryint = Integer.parseInt(salary.split("\\.")[0]);
                         
-                    		dataset.add(salaryint/1000);
+                    		dataset.add(salaryint);
                     	}
                     	catch (NumberFormatException nfe){
                     		
@@ -120,8 +144,14 @@ public class Histogram {
                 }
             }
     	
-        new Histogram(dataset);
+    	Collections.sort(dataset);
+    	ExampleChart<CategoryChart> exampleChart = new Graph();
+        CategoryChart chart = exampleChart.getChart();
+        new SwingWrapper<CategoryChart>(chart).displayChart();
     }
+
+
+
 
 }
 

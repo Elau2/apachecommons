@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="commons-csv-1.7.jar"/>
 	<classpathentry kind="lib" path="xchart-3.6.1.jar"/>
 	<classpathentry kind="lib" path="commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="xchart-demo-3.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
