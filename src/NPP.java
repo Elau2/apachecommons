@@ -6,16 +6,19 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import org.apache.commons.csv.*;
+import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.stat.Frequency;
+import org.apache.commons.math3.stat.StatUtils;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.moment.StandardDeviation;
 import org.knowm.xchart.*;
-import org.knowm.xchart.CategoryChart;
-import org.knowm.xchart.CategoryChartBuilder;
-import org.knowm.xchart.SwingWrapper;
+import org.knowm.xchart.XYSeries.XYSeriesRenderStyle;
 import org.knowm.xchart.style.Styler;
+import org.knowm.xchart.style.Styler.LegendPosition;
 import org.knowm.xchart.internal.*;
 //import org.knowm.xchart.demo.*;
 
-public class Graph implements ExampleChart<CategoryChart>{
+public class NPP implements ExampleChart<XYChart>{
 	
 	
 	private static final String filepath = "./Congress_White_House.csv";
@@ -23,9 +26,9 @@ public class Graph implements ExampleChart<CategoryChart>{
     private int classWidth;
     private static List<Integer> dataset = new ArrayList<Integer>();
     
-    public CategoryChart getChart() {
+    public XYChart getChart() {
     	
-    	
+    	/*
     	CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title("Salary Histogram").xAxisTitle("Salary").yAxisTitle("Count").build();
     	 
     	// Customize Chart
@@ -38,9 +41,57 @@ public class Graph implements ExampleChart<CategoryChart>{
     	chart.addSeries("histogram 1", histogram1.getxAxisData(), histogram1.getyAxisData());
     	
     	return chart;
+    	*/
+    	
+        // Create Chart
+        XYChart chart = new XYChartBuilder().width(800).height(600).build();
+     
+        // Customize Chart
+        chart.getStyler().setDefaultSeriesRenderStyle(XYSeriesRenderStyle.Scatter);
+        chart.getStyler().setChartTitleVisible(false);
+        chart.getStyler().setLegendPosition(LegendPosition.InsideSW);
+        chart.getStyler().setMarkerSize(16);
+     
+        // Series
+        List<Double> xData = new LinkedList<Double>();
+        List<Double> yData = new LinkedList<Double>();
+        
+        double[] datasetArray = new double[dataset.size()]; 
+        
+        // ArrayList to Array Conversion 
+        for (int i =0; i < dataset.size(); i++) 
+            datasetArray[i] = dataset.get(i); 
+        
+        
+        double variance = StatUtils.populationVariance(datasetArray);
+        double sd = Math.sqrt(variance);
+        double mean = StatUtils.mean(datasetArray);
+        
+        for (double i = 0; i < dataset.size(); i++) {
+        	xData.add((i + 1.00 - 0.375) / (((double)dataset.size()) + 0.25));
+        	yData.add(((double)dataset.get((int)i)-mean)/sd);
+        }
+        
+        //System.out.println(xData);
+        chart.addSeries("NPP", xData, yData);
+        
+        return chart;
     }
     
     /*
+    private double computeZScore(DescriptiveStatistics ds, RealDistribution dist) {
+            double variance = ds.getPopulationVariance();
+            double sd = Math.sqrt(variance);
+            double mean = ds.getMean();
+            double zscore;
+            for (int index = 0; index < ds.getN(); ++index) {
+                zscore = (ds.getElement(index)-mean)/sd;
+            }
+            return zscore;
+            
+        }
+    
+    
     public Histogram(List<Integer> dataset) {
 
         distributionMap = new TreeMap();
@@ -145,9 +196,9 @@ public class Graph implements ExampleChart<CategoryChart>{
             }
     	
     	Collections.sort(dataset);
-    	ExampleChart<CategoryChart> exampleChart = new Graph();
-        CategoryChart chart = exampleChart.getChart();
-        new SwingWrapper<CategoryChart>(chart).displayChart();
+    	ExampleChart<XYChart> exampleChart = new NPP();
+        XYChart chart = exampleChart.getChart();
+        new SwingWrapper<XYChart>(chart).displayChart();
     }
 
 
