@@ -6,30 +6,32 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import org.apache.commons.csv.*;
-import org.apache.commons.math3.stat.Frequency;
 import org.knowm.xchart.*;
 import org.knowm.xchart.CategoryChart;
 import org.knowm.xchart.CategoryChartBuilder;
 import org.knowm.xchart.SwingWrapper;
-import org.knowm.xchart.style.Styler;
-import org.knowm.xchart.internal.*;
-//import org.knowm.xchart.demo.*;
+
 
 public class Graph implements ExampleChart<CategoryChart>{
 	
-	
+	//CSV File
 	private static final String filepath = "./Congress_White_House.csv";
-    private Map distributionMap;
-    private int classWidth;
+	
+	//Data set graphed
     private static List<Integer> dataset = new ArrayList<Integer>();
     
+    /**
+     * @author Ethan Lau, Siri Phaneendra
+     * @version 1.0
+     * 
+     * getChart - Sets up chart layout
+     */
     public CategoryChart getChart() {
     	
-    	
+    	// Dimensions, Title and Axis Labels
     	CategoryChart chart = new CategoryChartBuilder().width(800).height(600).title("Salary Histogram").xAxisTitle("Salary").yAxisTitle("Count").build();
     	 
     	// Customize Chart
-    	
     	chart.getStyler().setAvailableSpaceFill(.96);
     	chart.getStyler().setOverlapped(true);
     	 
@@ -40,7 +42,10 @@ public class Graph implements ExampleChart<CategoryChart>{
     	return chart;
     }
     
-    /*
+    /* 
+     * =============================================
+     * OLD CODE FOR ERROR PAGE
+     * =============================================
     public Histogram(List<Integer> dataset) {
 
         distributionMap = new TreeMap();
@@ -121,6 +126,15 @@ public class Graph implements ExampleChart<CategoryChart>{
     }
     
     */
+    
+    /**
+     * @author - Ethan Lau, Siri Phaneendra
+     * @version 1.0
+     * @param args
+     * @throws IOException
+     * 
+     * main - method called when run, reads data and processes data
+     */
     public static void main(String[] args) throws IOException{
     	
     	try (
@@ -129,13 +143,12 @@ public class Graph implements ExampleChart<CategoryChart>{
             ) {
                 for (CSVRecord csvRecord : csvParser) {
                     // Accessing Values by Column Index
-                	
-                    String salary = csvRecord.get(2);
-                    if (salary.contains(".")) {
+                    String salary = csvRecord.get(2); //Gets 3rd column of the CSV file
+                    if (salary.contains(".")) { //Tests if the value is a salary value
                     	try {
-                    		int salaryint = Integer.parseInt(salary.split("\\.")[0]);
+                    		int salaryint = Integer.parseInt(salary.split("\\.")[0]);//converts double to int
                         
-                    		dataset.add(salaryint);
+                    		dataset.add(salaryint);//adds integer value to dataset list
                     	}
                     	catch (NumberFormatException nfe){
                     		
@@ -144,7 +157,9 @@ public class Graph implements ExampleChart<CategoryChart>{
                 }
             }
     	
-    	Collections.sort(dataset);
+    	Collections.sort(dataset);//sorts data by increasing value
+    	
+    	//Initializes graph output
     	ExampleChart<CategoryChart> exampleChart = new Graph();
         CategoryChart chart = exampleChart.getChart();
         new SwingWrapper<CategoryChart>(chart).displayChart();
@@ -155,33 +170,3 @@ public class Graph implements ExampleChart<CategoryChart>{
 
 }
 
-/**
-public class test {
-	private static int classWidth;
-	
-	public static void main(String[] args) {
-		System.out.println("Hi");
-		List<Integer> data = Arrays.asList(36, 25, 38, 46, 55, 68, 72, 55, 36, 38, 67, 45, 22, 48, 91, 46, 52, 61, 58, 55);
-				Frequency freq = new Frequency();
-				data.forEach(d -> freq.addValue(Double.parseDouble(d.toString())));
-		data.stream()
-				  .map(d -> Double.parseDouble(d.toString()))
-				  .distinct()
-				  .forEach(observation -> {
-				      long observationFrequency = freq.getCount(observation);
-				      int upperBoundary = (observation > classWidth)
-				        ? Math.multiplyExact( (int) Math.ceil(observation / classWidth), classWidth)
-				        : classWidth;
-				      int lowerBoundary = (upperBoundary > classWidth)
-				        ? Math.subtractExact(upperBoundary, classWidth)
-				        : 0;
-				      String bin = lowerBoundary + "-" + upperBoundary;
-				 
-				      updateDistributionMap(lowerBoundary, bin, observationFrequency);
-				  });
-	}
-
-}
-
-//https://www.baeldung.com/apache-commons-frequency
-**/
