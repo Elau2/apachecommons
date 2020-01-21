@@ -13,10 +13,18 @@ import org.knowm.xchart.style.Styler.LegendPosition;
 
 public class NPP implements ExampleChart<XYChart>{
 	
-	
+	//CSV File
 	private static final String filepath = "./Congress_White_House.csv";
+	
+	//Data set Graphed
     private static List<Integer> dataset = new ArrayList<Integer>();
     
+    /**
+     * @author Ethan Lau, Siri Phaneendra
+     * @version 1.0
+     * 
+     * getChart - Sets up chart layout
+     */
     public XYChart getChart() {
     
         // Create Chart
@@ -38,7 +46,7 @@ public class NPP implements ExampleChart<XYChart>{
         for (int i =0; i < dataset.size(); i++) 
             datasetArray[i] = dataset.get(i); 
         
-        
+        //Use of Apache Commons Math Classes
         double variance = StatUtils.populationVariance(datasetArray);
         double sd = Math.sqrt(variance);
         double mean = StatUtils.mean(datasetArray);
@@ -53,7 +61,14 @@ public class NPP implements ExampleChart<XYChart>{
         return chart;
     }
     
-
+    /**
+     * @author - Ethan Lau, Siri Phaneendra
+     * @version 1.0
+     * @param args
+     * @throws IOException
+     * 
+     * main - method called when run, reads data and processes data
+     */
     public static void main(String[] args) throws IOException{
     	
     	try (
@@ -63,28 +78,30 @@ public class NPP implements ExampleChart<XYChart>{
                 for (CSVRecord csvRecord : csvParser) {
                     // Accessing Values by Column Index
                 	
-                    String salary = csvRecord.get(2);
-                    if (salary.contains(".")) {
+                    String salary = csvRecord.get(2); //Gets 3rd column of the CSV file
+                    if (salary.contains(".")) { //Tests if the value is a salary value
                     	try {
-                    		int salaryint = Integer.parseInt(salary.split("\\.")[0]);
+                    		int salaryint = Integer.parseInt(salary.split("\\.")[0]); //converts double to int
                         
-                    		dataset.add(salaryint);
+                    		dataset.add(salaryint); //adds integer value to dataset list
                     	}
-                    	catch (NumberFormatException nfe){
+                    	catch (NumberFormatException nfe){ 
                     		
                     	}
                     }
                 }
             }
     	
-    	Collections.sort(dataset);
+    	Collections.sort(dataset); //sorts data by increasing value
+    	
+    	//Initializes graph output
     	ExampleChart<XYChart> exampleChart = new NPP();
         XYChart chart = exampleChart.getChart();
         new SwingWrapper<XYChart>(chart).displayChart();
+    
+
+
     }
-
-
-
 
 }
 
