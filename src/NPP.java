@@ -88,7 +88,7 @@ public class NPP implements ExampleChart<XYChart>{
 
 }
 
-/**
+/*
 public class test {
 	private static int classWidth;
 	
@@ -116,5 +116,4 @@ public class test {
 
 }
 
-//https://www.baeldung.com/apache-commons-frequency
-**/
+*/
